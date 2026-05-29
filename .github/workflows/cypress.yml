@@ -1,0 +1,50 @@
+# Nome que aparecerá na aba Actions do GitHub
+name: Cypress Tests
+
+# Define quando o workflow será executado
+on:
+
+  # Executa quando houver push para a branch main
+  push:
+    branches:
+      - main
+
+  # Executa quando houver Pull Request para a branch main
+  pull_request:
+    branches:
+      - main
+
+# Lista de jobs (tarefas) do pipeline
+jobs:
+
+  # Nome do job
+  cypress-run:
+
+    # Máquina virtual utilizada pelo GitHub Actions
+    runs-on: ubuntu-latest
+
+    # Passos que serão executados em sequência
+    steps:
+
+      # Faz download do código do repositório para a máquina virtual
+      - name: Checkout do repositório
+        uses: actions/checkout@v4
+
+      # Instala e configura a versão do Node.js necessária para o projeto
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+
+          # Versão do Node utilizada no pipeline
+          node-version: 20
+
+          # Armazena dependências em cache para acelerar futuras execuções
+          cache: npm
+
+      # Instala todas as dependências definidas no package-lock.json
+      - name: Instalar dependências
+        run: npm ci
+
+      # Executa todos os testes automatizados do Cypress
+      - name: Executar testes Cypress
+        run: npx cypress run
